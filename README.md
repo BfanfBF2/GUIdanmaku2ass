@@ -1,6 +1,6 @@
 # Bilibili Danmaku Downloader & Converter (GUI)
 
-[中文版](./README_CN.md) | [Download App]([#download](https://github.com/BfanfBF2/GUIdanmaku2ass/archive/refs/heads/main.zip))
+[中文版](./README_CN.md) | [Download App](https://github.com/BfanfBF2/GUIdanmaku2ass/archive/refs/heads/main.zip)
 
 A cross-platform GUI tool for batch downloading Bilibili danmaku (bullet comments), converting them to ASS subtitle format, and automatically renaming/moving them to organized folders. Built with Python + Tkinter.
 
