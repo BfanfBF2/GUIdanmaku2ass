@@ -1,6 +1,6 @@
 # B站弹幕下载与转换工具（图形界面）
 
-[English](./README.md) | [下载 App](#下载)
+[English](./README.md) | [下载 App](https://github.com/BfanfBF2/GUIdanmaku2ass/archive/refs/heads/main.zip)
 
 一款跨平台的 B 站弹幕批量下载、转换为 ASS 字幕，并自动重命名整理到对应文件夹的图形化工具。基于 Python + Tkinter 开发。
 
