@@ -4,7 +4,13 @@
 
 A cross-platform GUI tool for batch downloading Bilibili danmaku (bullet comments), converting them to ASS subtitle format, and automatically renaming/moving them to organized folders. Built with Python + Tkinter.
 
-![Screenshot](screenshot.png) *(Please add your screenshot here)*
+![Screenshot](screenshot.png) 
+
+
+---
+## 新功能
+- **1.0.2**：新增合并弹幕功能
+
 
 ---
 
