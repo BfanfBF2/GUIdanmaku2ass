@@ -5,6 +5,7 @@ import os
 import subprocess
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, simpledialog
+from merge_ass import *
 
 # ---------- 路径配置（自动适配当前用户）----------
 USER = os.getenv("USER") or os.getlogin()
@@ -15,6 +16,98 @@ BASH_SCRIPT = os.path.join(DANMAKU_DIR, "bdanmaku.sh")
 RENAME_SCRIPT = os.path.join(DANMAKU_DIR, "renameass.py")
 
 
+
+# 定义 MergeWindow 类（放在 Application 类外部或内部）
+
+class MergeWindow(tk.Toplevel):
+    def __init__(self, master):
+        super().__init__(master)
+        self.title("合并 ASS 弹幕")
+        self.geometry("600x400")
+        self.resizable(True, True)
+
+        self.file_list = []   # 存储文件路径
+
+        # 顶部提示
+        ttk.Label(self, text="添加多个 ASS 文件，按时间顺序合并成一个文件").pack(pady=5)
+
+        # 文件列表区域
+        list_frame = ttk.Frame(self)
+        list_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        self.listbox = tk.Listbox(list_frame, selectmode=tk.EXTENDED)
+        self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar = ttk.Scrollbar(list_frame, orient=tk.VERTICAL, command=self.listbox.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.listbox.config(yscrollcommand=scrollbar.set)
+
+        # 按钮区域
+        btn_frame = ttk.Frame(self)
+        btn_frame.pack(fill=tk.X, padx=10, pady=5)
+
+        ttk.Button(btn_frame, text="添加文件", command=self.add_files).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="移除选中", command=self.remove_selected).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="清空列表", command=self.clear_list).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="合并", command=self.merge_files).pack(side=tk.RIGHT, padx=5)
+
+        # 状态标签
+        self.status_var = tk.StringVar(value="就绪")
+        ttk.Label(self, textvariable=self.status_var).pack(pady=5)
+
+    def add_files(self):
+        from tkinter import filedialog
+        files = filedialog.askopenfilenames(
+            title="选择 ASS 弹幕文件",
+            filetypes=[("ASS files", "*.ass"), ("All files", "*.*")]
+        )
+        if files:
+            for f in files:
+                if f not in self.file_list:
+                    self.file_list.append(f)
+                    self.listbox.insert(tk.END, os.path.basename(f))
+            self.status_var.set(f"已添加 {len(files)} 个文件，共 {len(self.file_list)} 个")
+
+    def remove_selected(self):
+        selected = self.listbox.curselection()
+        if not selected:
+            return
+        # 从后往前删除
+        for idx in reversed(selected):
+            del self.file_list[idx]
+            self.listbox.delete(idx)
+        self.status_var.set(f"当前共 {len(self.file_list)} 个文件")
+
+    def clear_list(self):
+        self.file_list.clear()
+        self.listbox.delete(0, tk.END)
+        self.status_var.set("列表已清空")
+
+    def merge_files(self):
+        if len(self.file_list) < 2:
+            self.status_var.set("至少选择两个文件才能合并")
+            return
+
+        from tkinter import filedialog
+        output_path = filedialog.asksaveasfilename(
+            title="保存合并后的 ASS 文件",
+            defaultextension=".ass",
+            filetypes=[("ASS files", "*.ass")]
+        )
+        if not output_path:
+            return
+
+        self.status_var.set("正在合并，请稍候...")
+        self.update_idletasks()
+
+        try:
+            # 调用 merge_ass 模块
+            from merge_ass import merge_ass_files
+            merge_ass_files(self.file_list, output_path)
+            self.status_var.set(f"合并完成！保存至：{output_path}")
+            # 可选：自动打开所在文件夹
+        except Exception as e:
+            self.status_var.set(f"合并失败：{e}")
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -93,6 +186,8 @@ class Application(tk.Tk):
         bottom_frame.pack(fill=tk.X, pady=5)
         self.start_btn = ttk.Button(bottom_frame, text="🚀 开始处理", command=self.start_process)
         self.start_btn.pack(side=tk.RIGHT, padx=5)
+        self.merge_btn = ttk.Button(bottom_frame, text="🧩 合并弹幕", command=self.open_merge_window)
+        self.merge_btn.pack(side=tk.LEFT, padx=5)
         ttk.Button(bottom_frame, text="清空日志", command=self.clear_log).pack(side=tk.RIGHT, padx=5)
 
     # ---------- 链接相关 ----------
@@ -242,6 +337,11 @@ class Application(tk.Tk):
         self.start_btn.config(state='normal')
         self.log("=" * 50)
 
+    # 在 Application 类中增加以下方法
+
+    def open_merge_window(self):
+        """打开合并弹幕的独立窗口"""
+        MergeWindow(self)
 
 if __name__ == "__main__":
     app = Application()
