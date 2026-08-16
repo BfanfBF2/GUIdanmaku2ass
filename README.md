@@ -8,8 +8,8 @@ A cross-platform GUI tool for batch downloading Bilibili danmaku (bullet comment
 
 
 ---
-## 新功能
-- **1.0.2**：新增合并弹幕功能
+## New Features
+- **1.0.2**：Added a new function for merging bullet comments.
 
 
 ---
