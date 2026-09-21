@@ -2,6 +2,8 @@
 
 [中文版](./README_CN.md) | [Download App](https://github.com/BfanfBF2/GUIdanmaku2ass/archive/refs/heads/main.zip)
 
+[![downloads](https://img.shields.io/github/downloads/BfanfBF2/GUIdanmaku2ass/total?style=flat&color=00b894&label=downloads)](https://github.com/BfanfBF2/GUIdanmaku2ass/releases)
+
 A cross-platform GUI tool for batch downloading Bilibili danmaku (bullet comments), converting them to ASS subtitle format, and automatically renaming/moving them to organized folders. Built with Python + Tkinter.
 
 ![Screenshot](screenshot.png) 
